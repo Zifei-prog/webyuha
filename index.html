@@ -45,10 +45,18 @@
     width: 100vw; height: 100vh;
     object-fit: cover;
     z-index: -2;
-    opacity: 0.8; /* Transparansi video (0.25 = 25% terlihat) */
-    filter: blur(0px) saturate(1.1); /* Efek blur & warna dreamy */
+    opacity: 0.8;
+    filter: blur(0px) saturate(1.1);
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+  }
+  
+  /* Class untuk menyembunyikan video secara total */
+  .hide-video { 
+    opacity: 0 !important; 
     pointer-events: none;
   }
+
   /* Overlay Gradien Pastel agar teks tetap terbaca */
   .video-overlay {
     position: fixed;
@@ -57,7 +65,7 @@
     background: linear-gradient(135deg, rgba(255,246,236,0.3) 0%, rgba(247,214,224,0.3) 50%, rgba(228,217,245,0.85) 100%);
     z-index: -1;
     pointer-events: none;
-    backdrop-filter: blur(8px); /* Blur tambahan di atas video */
+    backdrop-filter: blur(8px);
   }
 
   /* NAV */
@@ -109,7 +117,7 @@
   .sec-desc{text-align:center;color:var(--soft);font-weight:300;margin-bottom:52px;}
 
   .card{
-    background:rgba(255,255,255,.75); /* Sedikit lebih tebal agar teks terbaca di atas video */
+    background:rgba(255,255,255,.75);
     backdrop-filter:blur(12px);
     border:1px solid rgba(255,255,255,.9);
     border-radius:var(--radius);
@@ -145,11 +153,33 @@
     position:relative;
     max-width:680px;
     margin:0 auto;
-    padding: 40px 40px 40px 70px; /* Padding ditambah biar rapi */
-    background: rgba(255, 255, 255, 0.4); /* Kaca transparan */
-    backdrop-filter: blur(8px); /* Efek blur kaca */
+    padding: 40px 40px 40px 70px;
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(8px);
     border-radius: var(--radius);
     box-shadow: var(--shadow);
+  }
+  .timeline::before{
+    content:"";position:absolute;left:30px;top:40px;bottom:40px;width:3px;border-radius:3px;
+    background:linear-gradient(var(--pink),var(--lavender),var(--mint));
+  }
+  .tl-item{position:relative;margin-bottom:34px;}
+  .tl-item::before{
+    content:"";position:absolute;left:-48px;top:6px;width:16px;height:16px;border-radius:50%;
+    background:var(--white);border:4px solid var(--lavender);box-shadow:0 0 0 4px rgba(228,217,245,.4);
+  }
+  .tl-item .year {
+    font-family:'Playfair Display',serif;
+    font-size:1.15rem;
+    color: #2A2233;
+    font-weight: 700;
+    text-shadow: 0 0 10px rgba(255,255,255,0.9);
+  }
+  .tl-item p {
+    color: #3A3142;
+    font-weight: 500;
+    font-size:.95rem;
+    text-shadow: 0 0 8px rgba(255,255,255,0.9);
   }
 
   /* FACTS */
@@ -247,7 +277,7 @@
   
   #music-btn::after {
     content: ""; position: absolute; width: 32px; height: 32px; border-radius: 50%;
-    background-image: url('cover-moonride.jpg'); /* Cover Moonride */
+    background-image: url('cover-moonride.jpg');
     background-size: cover; background-position: center; border: 3px solid #000; z-index: 2;
   }
   #music-btn::before {
@@ -257,6 +287,17 @@
 
   #music-btn.playing { animation: spinVinyl 4s linear infinite; }
   @keyframes spinVinyl { 100% { transform: rotate(360deg); } }
+
+  /* TOMBOL TOGGLE EFEK */
+  #vfx-btn {
+    position: fixed; bottom: 30px; left: 30px; width: 54px; height: 54px; border-radius: 50%;
+    background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(10px);
+    border: 2px solid var(--lavender); color: var(--text); font-size: 1.3rem;
+    cursor: pointer; box-shadow: var(--shadow); transition: 0.3s; z-index: 999;
+    display: flex; align-items: center; justify-content: center;
+  }
+  #vfx-btn:hover { transform: scale(1.1); background: var(--white); }
+  #vfx-btn.off { background: #E5D9E5; border-color: #7A6E82; opacity: 0.6; }
 
   footer{
     text-align:center;padding:50px 24px 40px;color:var(--soft);
@@ -271,6 +312,7 @@
     .avatar{width:150px;height:150px;font-size:3.4rem;}
     #music-btn{width: 60px; height: 60px; bottom: 20px; right: 20px;}
     #music-btn::after{width: 24px; height: 24px;}
+    #vfx-btn{width: 44px; height: 44px; bottom: 20px; left: 20px; font-size: 1.1rem;}
   }
 
   /* EFEK DREAMY (FLOATING BUBBLES) */
@@ -288,21 +330,43 @@
     20% { opacity: 0.8; }
     100% { transform: translateY(-120vh) scale(1.5); opacity: 0; }
   }
-    /* OPTIMASI UNTUK HP (ANTI-LAG) */
-  @media (max-width: 768px) {
-    /* 1. Sembunyikan video background di HP */
-    .video-bg {
-      display: none; 
-    }
-    /* 2. Buat background tetap pastel cantik tanpa video */
-    .video-overlay {
-      background: linear-gradient(135deg, var(--cream) 0%, var(--pink) 55%, var(--lavender) 100%);
-      backdrop-filter: none;
-    }
-    /* 3. Matikan efek piringan hitam muter di HP biar ga berat */
-    #music-btn.playing {
-      animation: none; 
-    }
+
+  /* DESAIN TOOLTIP PETUNJUK */
+  .tooltip {
+    position: fixed;
+    background: rgba(74, 63, 82, 0.9);
+    color: white;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    z-index: 1000;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  }
+  
+  #tooltip-music {
+    bottom: 120px;
+    right: 30px;
+    transform: translateY(10px);
+  }
+  
+  #tooltip-vfx {
+    bottom: 95px;
+    left: 30px;
+    transform: translateY(10px);
+  }
+
+  .tooltip.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media(max-width: 640px) {
+    #tooltip-music { bottom: 90px; right: 20px; font-size: 0.75rem; }
+    #tooltip-vfx { bottom: 75px; left: 20px; font-size: 0.75rem; }
   }
 </style>
 </head>
@@ -445,6 +509,11 @@
   <source src="moonride.mp3" type="audio/mpeg">
 </audio>
 <button id="music-btn" title="Putar/Jeda Musik"></button>
+<button id="vfx-btn" title="Matikan/Nyalakan Video Latar">✨</button>
+
+<!-- PETUNJUK TOMBOL -->
+<div id="tooltip-music" class="tooltip">Klik untuk putar lagu 🎶</div>
+<div id="tooltip-vfx" class="tooltip">Matikan video jika lag 🔇</div>
 
 <footer>
   <div class="credit-wrapper">
@@ -591,6 +660,41 @@
     setTimeout(() => { bubble.remove(); }, parseFloat(duration) * 1000);
   }
   setInterval(createBubble, 1000);
+
+  // LOGIKA TOMBOL MATIKAN VIDEO (VFX)
+  const vfxBtn = document.getElementById('vfx-btn');
+  const videoBg = document.querySelector('.video-bg');
+
+  vfxBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    videoBg.classList.toggle('hide-video');
+    
+    if (videoBg.classList.contains('hide-video')) {
+      vfxBtn.classList.add('off');
+      vfxBtn.textContent = '🚫';
+      vfxBtn.title = "Nyalakan Video Latar";
+    } else {
+      vfxBtn.classList.remove('off');
+      vfxBtn.textContent = '✨';
+      vfxBtn.title = "Matikan Video Latar";
+    }
+  });
+
+  // LOGIKA MEMUNCULKAN PETUNJUK (TOOLTIP)
+  const tooltipMusic = document.getElementById('tooltip-music');
+  const tooltipVfx = document.getElementById('tooltip-vfx');
+
+  // Munculkan petunjuk setelah 1 detik web dibuka
+  setTimeout(() => {
+    tooltipMusic.classList.add('show');
+    tooltipVfx.classList.add('show');
+  }, 1000);
+
+  // Hilangkan petunjuk setelah 6 detik
+  setTimeout(() => {
+    tooltipMusic.classList.remove('show');
+    tooltipVfx.classList.remove('show');
+  }, 6000);
 </script>
 
 </body>
