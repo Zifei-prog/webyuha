@@ -368,6 +368,22 @@
     #tooltip-music { bottom: 90px; right: 20px; font-size: 0.75rem; }
     #tooltip-vfx { bottom: 75px; left: 20px; font-size: 0.75rem; }
   }
+    /* OPTIMASI ANTI-LAG UNTUK HP */
+  @media (max-width: 768px) {
+    /* 1. Sembunyikan video sama sekali di HP */
+    .video-bg {
+      display: none !important; 
+    }
+    /* 2. Ganti background jadi gradien pastel polos yang ringan */
+    .video-overlay {
+      background: linear-gradient(135deg, var(--cream) 0%, var(--pink) 55%, var(--lavender) 100%);
+      backdrop-filter: none;
+    }
+    /* 3. Matikan efek piringan hitam muter di HP biar ga berat */
+    #music-btn.playing {
+      animation: none !important; 
+    }
+  }
 </style>
 </head>
 <body>
@@ -659,7 +675,12 @@
     dreamyBg.appendChild(bubble);
     setTimeout(() => { bubble.remove(); }, parseFloat(duration) * 1000);
   }
-  setInterval(createBubble, 1000);
+    // Jika layar HP (di bawah 768px), gelembung muncul tiap 3 detik. Jika laptop, tiap 1 detik.
+  if (window.innerWidth <= 768) {
+    setInterval(createBubble, 3000);
+  } else {
+    setInterval(createBubble, 1000);
+  }
 
   // LOGIKA TOMBOL MATIKAN VIDEO (VFX)
   const vfxBtn = document.getElementById('vfx-btn');
