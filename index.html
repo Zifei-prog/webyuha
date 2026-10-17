@@ -288,6 +288,22 @@
     20% { opacity: 0.8; }
     100% { transform: translateY(-120vh) scale(1.5); opacity: 0; }
   }
+    /* OPTIMASI UNTUK HP (ANTI-LAG) */
+  @media (max-width: 768px) {
+    /* 1. Sembunyikan video background di HP */
+    .video-bg {
+      display: none; 
+    }
+    /* 2. Buat background tetap pastel cantik tanpa video */
+    .video-overlay {
+      background: linear-gradient(135deg, var(--cream) 0%, var(--pink) 55%, var(--lavender) 100%);
+      backdrop-filter: none;
+    }
+    /* 3. Matikan efek piringan hitam muter di HP biar ga berat */
+    #music-btn.playing {
+      animation: none; 
+    }
+  }
 </style>
 </head>
 <body>
@@ -574,7 +590,7 @@
     dreamyBg.appendChild(bubble);
     setTimeout(() => { bubble.remove(); }, parseFloat(duration) * 1000);
   }
-  setInterval(createBubble, 400);
+  setInterval(createBubble, 1000);
 </script>
 
 </body>
