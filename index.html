@@ -34,8 +34,31 @@
     color:var(--text);
     line-height:1.7;
     overflow-x:hidden;
+    position: relative;
   }
   h1,h2,h3{font-family:'Playfair Display',serif;font-weight:700;letter-spacing:.5px;}
+
+  /* VIDEO BACKGROUND DREAMY */
+  .video-bg {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    object-fit: cover;
+    z-index: -2;
+    opacity: 0.8; /* Transparansi video (0.25 = 25% terlihat) */
+    filter: blur(0px) saturate(1.1); /* Efek blur & warna dreamy */
+    pointer-events: none;
+  }
+  /* Overlay Gradien Pastel agar teks tetap terbaca */
+  .video-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background: linear-gradient(135deg, rgba(255,246,236,0.3) 0%, rgba(247,214,224,0.3) 50%, rgba(228,217,245,0.85) 100%);
+    z-index: -1;
+    pointer-events: none;
+    backdrop-filter: blur(8px); /* Blur tambahan di atas video */
+  }
 
   /* NAV */
   nav{
@@ -58,11 +81,6 @@
     align-items:center;justify-content:center;text-align:center;
     padding:120px 24px 60px;position:relative;
   }
-  .hero::before,.hero::after{
-    content:"";position:absolute;border-radius:50%;filter:blur(70px);opacity:.6;z-index:0;
-  }
-  .hero::before{width:340px;height:340px;background:var(--mint);top:12%;left:6%;}
-  .hero::after{width:300px;height:300px;background:var(--lavender);bottom:14%;right:8%;}
   .hero > *{position:relative;z-index:1;}
   .avatar{
     width:190px;height:190px;border-radius:50%;
@@ -72,7 +90,9 @@
     box-shadow:0 18px 40px rgba(122,110,130,.22);
     border:6px solid rgba(255,255,255,.7);
     margin-bottom:28px;animation:float 5s ease-in-out infinite;
+    overflow:hidden;
   }
+  .avatar img{width:100%;height:100%;object-fit:cover;}
   @keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-14px);}}
   .hero h1{font-size:clamp(2.8rem,7vw,5rem);line-height:1.1;}
   .hero .sub{
@@ -89,9 +109,9 @@
   .sec-desc{text-align:center;color:var(--soft);font-weight:300;margin-bottom:52px;}
 
   .card{
-    background:rgba(255,255,255,.65);
-    backdrop-filter:blur(10px);
-    border:1px solid rgba(255,255,255,.8);
+    background:rgba(255,255,255,.75); /* Sedikit lebih tebal agar teks terbaca di atas video */
+    backdrop-filter:blur(12px);
+    border:1px solid rgba(255,255,255,.9);
     border-radius:var(--radius);
     box-shadow:var(--shadow);
     padding:32px;
@@ -121,18 +141,16 @@
   }
 
   /* TIMELINE */
-  .timeline{position:relative;max-width:680px;margin:0 auto;padding-left:36px;}
-  .timeline::before{
-    content:"";position:absolute;left:8px;top:6px;bottom:6px;width:3px;border-radius:3px;
-    background:linear-gradient(var(--pink),var(--lavender),var(--mint));
+   .timeline{
+    position:relative;
+    max-width:680px;
+    margin:0 auto;
+    padding: 40px 40px 40px 70px; /* Padding ditambah biar rapi */
+    background: rgba(255, 255, 255, 0.4); /* Kaca transparan */
+    backdrop-filter: blur(8px); /* Efek blur kaca */
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
   }
-  .tl-item{position:relative;margin-bottom:34px;}
-  .tl-item::before{
-    content:"";position:absolute;left:-34px;top:6px;width:16px;height:16px;border-radius:50%;
-    background:var(--white);border:4px solid var(--lavender);box-shadow:0 0 0 4px rgba(228,217,245,.4);
-  }
-  .tl-item .year{font-family:'Playfair Display',serif;font-size:1.15rem;color:var(--text);}
-  .tl-item p{color:var(--soft);font-weight:300;font-size:.95rem;}
 
   /* FACTS */
   .facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:20px;}
@@ -145,8 +163,9 @@
   /* QUOTE */
   .quote{
     text-align:center;padding:70px 24px;
-    background:rgba(255,255,255,.5);backdrop-filter:blur(10px);
+    background:rgba(255,255,255,.6);backdrop-filter:blur(12px);
     border-radius:var(--radius);box-shadow:var(--shadow);
+    border:1px solid rgba(255,255,255,.8);
   }
   .quote blockquote{
     font-family:'Playfair Display',serif;font-style:italic;
@@ -159,7 +178,7 @@
   .social a{
     text-decoration:none;color:var(--text);font-weight:500;font-size:.9rem;
     padding:14px 30px;border-radius:999px;
-    background:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.9);
+    background:rgba(255,255,255,.8);border:1px solid rgba(255,255,255,.9);
     box-shadow:var(--shadow);transition:.3s;
   }
   .social a:hover{background:var(--white);transform:translateY(-4px);}
@@ -168,41 +187,26 @@
   .reveal{opacity:0;transform:translateY(28px);transition:opacity .8s ease,transform .8s ease;}
   .reveal.visible{opacity:1;transform:translateY(0);}
 
-    /* CREDIT AESTHETIC */
+  /* CREDIT AESTHETIC */
   .credit-wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 10px;
+    display: flex; flex-direction: column; align-items: center; gap: 12px; margin-bottom: 10px;
   }
   .credit-text {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.1rem;
-    font-style: italic;
-    letter-spacing: 1px;
-    color: var(--text);
+    font-family: 'Playfair Display', serif; font-size: 1.1rem; font-style: italic;
+    letter-spacing: 1px; color: var(--text);
   }
   .credit-text .author {
-    font-weight: 700;
-    font-size: 1.3rem;
-    color: #D88BA6; /* Warna Pink Aesthetic */
-    text-shadow: 0 0 10px rgba(216, 139, 166, 0.4);
-    letter-spacing: 2px;
+    font-weight: 700; font-size: 1.3rem; color: #D88BA6;
+    text-shadow: 0 0 10px rgba(216, 139, 166, 0.4); letter-spacing: 2px;
   }
   .credit-sub {
-    font-size: 0.8rem;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--soft);
-    font-weight: 300;
+    font-size: 0.8rem; letter-spacing: 3px; text-transform: uppercase; color: var(--soft); font-weight: 300;
   }
   .credit-line {
-    width: 60px;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--soft), transparent);
+    width: 60px; height: 1px; background: linear-gradient(90deg, transparent, var(--soft), transparent);
   }
-    /* RATING & KOMENTAR */
+
+  /* RATING & KOMENTAR */
   .stars { display: flex; justify-content: center; gap: 8px; margin: 10px 0; }
   .star { font-size: 2.5rem; color: #E5D9E5; cursor: pointer; transition: 0.2s; user-select: none; }
   .star.active, .star:hover, .star:hover ~ .star { color: #FFB3C6; text-shadow: 0 0 15px rgba(255,179,198,0.6); }
@@ -210,7 +214,7 @@
   .comment-form { display: flex; flex-direction: column; gap: 12px; }
   .comment-form input, .comment-form textarea {
     width: 100%; padding: 14px; border-radius: 12px; border: 1px solid rgba(122,110,130,0.2);
-    background: rgba(255,255,255,0.8); font-family: 'Poppins', sans-serif; font-size: 0.95rem; color: var(--text);
+    background: rgba(255,255,255,0.9); font-family: 'Poppins', sans-serif; font-size: 0.95rem; color: var(--text);
     resize: none; outline: none; transition: 0.3s;
   }
   .comment-form input:focus, .comment-form textarea:focus { border-color: var(--pink); box-shadow: 0 0 0 3px rgba(247,214,224,0.5); }
@@ -222,16 +226,41 @@
   #submit-comment:hover { background: #6D5F77; transform: translateY(-2px); box-shadow: var(--shadow); }
 
   .comment-item {
-    background: rgba(255,255,255,0.6); padding: 16px; border-radius: 16px; margin-bottom: 12px;
+    background: rgba(255,255,255,0.8); padding: 16px; border-radius: 16px; margin-bottom: 12px;
     border-left: 4px solid var(--lavender); animation: fadeIn 0.5s ease;
   }
   .comment-item .c-name { font-weight: 600; font-size: 0.9rem; color: var(--text); margin-bottom: 4px; }
   .comment-item .c-text { font-size: 0.9rem; color: var(--soft); font-weight: 300; }
   
   @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* VINYL PLAYER (IKON LAGU) */
+  #music-btn {
+    position: fixed; bottom: 30px; right: 30px; width: 80px; height: 80px; border-radius: 50%;
+    background: #111;
+    background-image: repeating-radial-gradient(circle at center, #111, #111 2px, #222 3px, #111 4px);
+    border: 5px solid #333; box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+    cursor: pointer; z-index: 999; display: flex; align-items: center; justify-content: center;
+    overflow: hidden; transition: transform 0.3s;
+  }
+  #music-btn:hover { transform: scale(1.08); }
+  
+  #music-btn::after {
+    content: ""; position: absolute; width: 32px; height: 32px; border-radius: 50%;
+    background-image: url('cover-moonride.jpg'); /* Cover Moonride */
+    background-size: cover; background-position: center; border: 3px solid #000; z-index: 2;
+  }
+  #music-btn::before {
+    content: ""; position: absolute; width: 6px; height: 6px; border-radius: 50%;
+    background: #fff; z-index: 3; box-shadow: 0 0 5px rgba(0,0,0,0.5);
+  }
+
+  #music-btn.playing { animation: spinVinyl 4s linear infinite; }
+  @keyframes spinVinyl { 100% { transform: rotate(360deg); } }
+
   footer{
     text-align:center;padding:50px 24px 40px;color:var(--soft);
-    font-size:.82rem;font-weight:300;
+    font-size:.82rem;font-weight:300;position:relative;z-index:10;
   }
   footer .heart{color:#E8A0B8;}
 
@@ -240,10 +269,38 @@
     nav a{font-size:.72rem;padding:6px 9px;}
     section{padding:70px 18px;}
     .avatar{width:150px;height:150px;font-size:3.4rem;}
+    #music-btn{width: 60px; height: 60px; bottom: 20px; right: 20px;}
+    #music-btn::after{width: 24px; height: 24px;}
+  }
+
+  /* EFEK DREAMY (FLOATING BUBBLES) */
+  .dreamy-bg {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none; z-index: 0; overflow: hidden;
+  }
+  .bubble {
+    position: absolute; bottom: -100px; background: rgba(255, 255, 255, 0.4);
+    border-radius: 50%; box-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+    animation: floatUp linear infinite; backdrop-filter: blur(2px);
+  }
+  @keyframes floatUp {
+    0% { transform: translateY(0) scale(1); opacity: 0; }
+    20% { opacity: 0.8; }
+    100% { transform: translateY(-120vh) scale(1.5); opacity: 0; }
   }
 </style>
 </head>
 <body>
+
+<!-- VIDEO BACKGROUND DREAMY -->
+<video autoplay loop muted playsinline class="video-bg">
+  <source src="video-yuha.mp4" type="video/mp4">
+</video>
+<!-- Overlay Gradien Transparan -->
+<div class="video-overlay"></div>
+
+<!-- EFEK DREAMY BACKGROUND (BUBBLES) -->
+<div class="dreamy-bg" id="dreamy-bg"></div>
 
 <nav>
   <a href="#profil">Profil</a>
@@ -256,7 +313,9 @@
 
 <!-- HERO -->
 <header class="hero">
-  <div class="avatar">Y</div>
+  <div class="avatar">
+    <img src="cover.jpg" alt="Yuha">
+  </div>
   <h1>Yuha</h1>
   <p class="sub">Hearts2Hearts</p>
   <p class="tagline">"All-Rounder" Hearts2Hearts · Si Kelinci dari Wonju · Tone Fairy 🎀</p>
@@ -264,7 +323,6 @@
 
 <!-- PROFIL -->
 <section id="profil">
- <section id="profil">
   <h2 class="sec-title reveal">Profil</h2>
   <p class="sec-desc reveal">Sekilas tentang Yuha</p>
   <div class="profile-grid reveal">
@@ -276,19 +334,18 @@
     <div class="card stat"><div class="label">Gol. Darah</div><div class="value">B</div></div>
   </div>
 </section>
-</section>
+
 <!-- GALERI -->
 <section id="galeri">
   <h2 class="sec-title reveal">Galeri</h2>
   <p class="sec-desc reveal">Momen-momen favorit</p>
   <div class="gallery reveal">
-    <!-- Ganti src dengan foto asli, contoh: <img src="foto1.jpg" alt="Yuha"> -->
     <div class="tile"><img src="foto1.jpg" alt="Yuha"></div>
-<div class="tile"><img src="foto2.jpg" alt="Yuha"></div>
-<div class="tile"><img src="foto3.jpg" alt="Yuha"></div>
-<div class="tile"><img src="foto4.jpg" alt="Yuha"></div>
-<div class="tile"><img src="foto5.jpg" alt="Yuha"></div>
-<div class="tile"><img src="foto6.jpg" alt="Yuha"></div>
+    <div class="tile"><img src="foto2.jpg" alt="Yuha"></div>
+    <div class="tile"><img src="foto3.jpg" alt="Yuha"></div>
+    <div class="tile"><img src="foto4.jpg" alt="Yuha"></div>
+    <div class="tile"><img src="foto5.jpg" alt="Yuha"></div>
+    <div class="tile"><img src="foto6.jpg" alt="Yuha"></div>
   </div>
 </section>
 
@@ -331,11 +388,11 @@
   <h2 class="sec-title reveal">Sosial Media</h2>
   <p class="sec-desc reveal">Ikuti Yuha dan Hearts2Hearts</p>
   <div class="social reveal">
-   <a href="https://instagram.com/hearts2hearts" target="_blank">Instagram</a>
-<a href="https://tiktok.com/@hearts2hearts" target="_blank">TikTok</a>
-<a href="https://x.com/hearts2hearts" target="_blank">X / Twitter</a>
-<a href="https://youtube.com/@hearts2hearts.official" target="_blank">YouTube</a>
-<a href="https://facebook.com/hearts2heartsH2H" target="_blank">Facebook</a>
+    <a href="https://instagram.com/hearts2hearts" target="_blank">Instagram</a>
+    <a href="https://tiktok.com/@hearts2hearts" target="_blank">TikTok</a>
+    <a href="https://x.com/hearts2hearts" target="_blank">X / Twitter</a>
+    <a href="https://youtube.com/@hearts2hearts.official" target="_blank">YouTube</a>
+    <a href="https://facebook.com/hearts2heartsH2H" target="_blank">Facebook</a>
   </div>
 </section>
 
@@ -345,7 +402,6 @@
   <p class="sec-desc reveal">Beri rating dan tinggalkan pesan untuk Yuha</p>
   
   <div class="card reveal" style="max-width: 650px; margin: 0 auto;">
-    <!-- Rating Bintang -->
     <div style="text-align: center; margin-bottom: 30px;">
       <h3 style="font-size: 1.2rem; margin-bottom: 10px;">How much do you love Yuha?</h3>
       <div class="stars" id="star-container">
@@ -358,21 +414,24 @@
       <p id="rating-text" style="font-size: 0.85rem; color: var(--soft); margin-top: 10px;">Pilih bintangnya!</p>
     </div>
 
-    <!-- Form Komentar -->
     <div class="comment-form">
       <input type="text" id="comment-name" placeholder="Nama kamu..." required>
       <textarea id="comment-text" rows="3" placeholder="Tulis pesan manis untuk Yuha..." required></textarea>
       <button id="submit-comment">Kirim Pesan 💌</button>
     </div>
 
-    <!-- Tampilan Komentar -->
-    <div id="comments-list" style="margin-top: 30px;">
-      <!-- Komentar akan muncul di sini -->
-    </div>
+    <div id="comments-list" style="margin-top: 30px;"></div>
   </div>
 </section>
+
+<!-- AUDIO & TOMBOL PIRINGAN HITAM -->
+<audio id="bgm" loop>
+  <source src="moonride.mp3" type="audio/mpeg">
+</audio>
+<button id="music-btn" title="Putar/Jeda Musik"></button>
+
 <footer>
-   <div class="credit-wrapper">
+  <div class="credit-wrapper">
     <div class="credit-line"></div>
     <p class="credit-text">
       Crafted with <span class="heart">♥</span> by 
@@ -384,13 +443,15 @@
 </footer>
 
 <script>
+  // LOGIKA ANIMASI REVEAL
   const io = new IntersectionObserver((entries)=>{
     entries.forEach(e=>{
       if(e.isIntersecting){e.target.classList.add('visible');io.unobserve(e.target);}
     });
   },{threshold:.15});
   document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
-    // LOGIKA RATING BINTANG
+
+  // LOGIKA RATING BINTANG
   const stars = document.querySelectorAll('.star');
   const ratingText = document.getElementById('rating-text');
   let currentRating = 0;
@@ -400,7 +461,6 @@
       currentRating = parseInt(star.getAttribute('data-value'));
       stars.forEach(s => s.classList.remove('active'));
       
-      // Warnai bintang dari kiri sampai bintang yang diklik
       for (let i = 0; i < currentRating; i++) {
         stars[i].classList.add('active');
       }
@@ -408,8 +468,7 @@
     });
   });
 
-  // LOGIKA KOMENTAR
-    // KONEKSI KE DATABASE SUPABASE
+  // KONEKSI KE DATABASE SUPABASE
   const SUPABASE_URL = 'https://aisddiwmwbsnjyetamyn.supabase.co';
   const SUPABASE_KEY = 'sb_publishable_1FImFhaQBL1gw3giski0kA_76yqr0k6';
 
@@ -418,88 +477,104 @@
   const textInput = document.getElementById('comment-text');
   const commentsList = document.getElementById('comments-list');
 
-  // 1. Fungsi ambil komentar dari database
   async function fetchComments() {
-    // Tampilkan loading sebentar
     commentsList.innerHTML = '<p style="text-align:center; color:var(--soft); font-style:italic;">Memuat komentar...</p>';
     
     try {
       const res = await fetch(`${SUPABASE_URL}/rest/v1/comments?select=*&order=created_at.desc`, {
-        headers: {
-          'apikey': SUPABASE_KEY,
-          'Authorization': `Bearer ${SUPABASE_KEY}`
-        }
+        headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
       });
       const data = await res.json();
       
-      commentsList.innerHTML = ''; // bersihkan list lama
+      commentsList.innerHTML = '';
       if (data.length === 0) {
         commentsList.innerHTML = '<p style="text-align:center; color:var(--soft); font-style:italic;">Belum ada komentar, jadi yang pertama yuk!</p>';
       } else {
         data.forEach(c => {
           const div = document.createElement('div');
           div.className = 'comment-item';
-          // Gunakan textContent untuk mencegah XSS (hacker nyisipin script)
           const nameDiv = document.createElement('div');
           nameDiv.className = 'c-name';
           nameDiv.textContent = c.name;
           const textDiv = document.createElement('div');
           textDiv.className = 'c-text';
           textDiv.textContent = c.text;
-          
           div.appendChild(nameDiv);
           div.appendChild(textDiv);
           commentsList.appendChild(div);
         });
       }
     } catch (error) {
-      console.error("Gagal load komentar:", error);
       commentsList.innerHTML = '<p style="text-align:center; color:red; font-style:italic;">Gagal memuat komentar. Cek koneksi internet.</p>';
     }
   }
 
-  // 2. Fungsi kirim komentar ke database
   submitBtn.addEventListener('click', async () => {
     const name = nameInput.value.trim();
     const text = textInput.value.trim();
+    if (name === '' || text === '') { alert("Isi nama dan pesannya dulu ya!"); return; }
 
-    if (name === '' || text === '') {
-      alert("Isi nama dan pesannya dulu ya, Owner/teman!");
-      return;
-    }
-
-    submitBtn.disabled = true; // cegah klik ganda
+    submitBtn.disabled = true;
     submitBtn.textContent = "Mengirim... 💌";
 
     try {
       const res = await fetch(`${SUPABASE_URL}/rest/v1/comments`, {
         method: 'POST',
         headers: {
-          'apikey': SUPABASE_KEY,
-          'Authorization': `Bearer ${SUPABASE_KEY}`,
-          'Content-Type': 'application/json',
-          'Prefer': 'return=minimal' // Supaya ga ngembaliin data, lebih ringan
+          'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`,
+          'Content-Type': 'application/json', 'Prefer': 'return=minimal'
         },
         body: JSON.stringify({ name: name, text: text })
       });
 
       if (res.ok) {
-        nameInput.value = '';
-        textInput.value = '';
-        fetchComments(); // refresh list komentar langsung
-      } else {
-        alert("Gagal mengirim komentar. Coba lagi nanti.");
-      }
-    } catch (error) {
-      alert("Gagal mengirim komentar. Pastikan internet lancar.");
-    } finally {
-      submitBtn.disabled = false;
-      submitBtn.textContent = "Kirim Pesan 💌";
-    }
+        nameInput.value = ''; textInput.value = ''; fetchComments();
+      } else { alert("Gagal mengirim komentar. Coba lagi nanti."); }
+    } catch (error) { alert("Gagal mengirim komentar. Pastikan internet lancar."); } 
+    finally { submitBtn.disabled = false; submitBtn.textContent = "Kirim Pesan 💌"; }
   });
 
-  // 3. Panggil data komentar saat web pertama dibuka
   fetchComments();
+
+  // LOGIKA BGM PLAYER & AUTOPLAY
+  const bgm = document.getElementById('bgm');
+  const musicBtn = document.getElementById('music-btn');
+
+  function playMusic() {
+    bgm.play().then(() => { musicBtn.classList.add('playing'); }).catch((error) => {
+      console.log("Autoplay diblokir browser. Menunggu klik dari pengunjung.");
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', () => { playMusic(); });
+
+  document.body.addEventListener('click', function autoPlayOnClick() {
+    if (bgm.paused) { playMusic(); }
+    if (!bgm.paused) { document.body.removeEventListener('click', autoPlayOnClick); }
+  });
+
+  musicBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (bgm.paused) { bgm.play(); musicBtn.classList.add('playing'); } 
+    else { bgm.pause(); musicBtn.classList.remove('playing'); }
+  });
+
+  // LOGIKA EFEK DREAMY (MEMBUAT BUBBLES TERBANG)
+  const dreamyBg = document.getElementById('dreamy-bg');
+  
+  function createBubble() {
+    const bubble = document.createElement('div');
+    bubble.className = 'bubble';
+    const size = Math.random() * 40 + 20 + 'px';
+    bubble.style.width = size;
+    bubble.style.height = size;
+    bubble.style.left = Math.random() * 100 + 'vw';
+    const duration = Math.random() * 10 + 10 + 's';
+    bubble.style.animationDuration = duration;
+    dreamyBg.appendChild(bubble);
+    setTimeout(() => { bubble.remove(); }, parseFloat(duration) * 1000);
+  }
+  setInterval(createBubble, 400);
 </script>
 
 </body>
