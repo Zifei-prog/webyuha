@@ -402,29 +402,57 @@
   });
 
   // LOGIKA KOMENTAR
+    // KONEKSI KE DATABASE SUPABASE
+  const SUPABASE_URL = 'https://aisddiwmwbsnjyetamyn.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_1FImFhaQBL1gw3giski0kA_76yqr0k6';
+
   const submitBtn = document.getElementById('submit-comment');
   const nameInput = document.getElementById('comment-name');
   const textInput = document.getElementById('comment-text');
   const commentsList = document.getElementById('comments-list');
 
-  // Tampilkan komentar bawaan (biar web gak sepi)
-  const defaultComments = [
-    { name: "H2H_Stan", text: "Yuha beneran all-rounder! Visualnya bikin meleleh 🥺💖" },
-    { name: "Zzifei", text: "Webnya bagus banget, pastelnya pas buat Yuha! 🎀" }
-  ];
-
-  function renderComment(name, text) {
-    const div = document.createElement('div');
-    div.className = 'comment-item';
-    div.innerHTML = `<div class="c-name">${name}</div><div class="c-text">${text}</div>`;
-    commentsList.prepend(div); // Komentar baru muncul paling atas
+  // 1. Fungsi ambil komentar dari database
+  async function fetchComments() {
+    // Tampilkan loading sebentar
+    commentsList.innerHTML = '<p style="text-align:center; color:var(--soft); font-style:italic;">Memuat komentar...</p>';
+    
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/comments?select=*&order=created_at.desc`, {
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`
+        }
+      });
+      const data = await res.json();
+      
+      commentsList.innerHTML = ''; // bersihkan list lama
+      if (data.length === 0) {
+        commentsList.innerHTML = '<p style="text-align:center; color:var(--soft); font-style:italic;">Belum ada komentar, jadi yang pertama yuk!</p>';
+      } else {
+        data.forEach(c => {
+          const div = document.createElement('div');
+          div.className = 'comment-item';
+          // Gunakan textContent untuk mencegah XSS (hacker nyisipin script)
+          const nameDiv = document.createElement('div');
+          nameDiv.className = 'c-name';
+          nameDiv.textContent = c.name;
+          const textDiv = document.createElement('div');
+          textDiv.className = 'c-text';
+          textDiv.textContent = c.text;
+          
+          div.appendChild(nameDiv);
+          div.appendChild(textDiv);
+          commentsList.appendChild(div);
+        });
+      }
+    } catch (error) {
+      console.error("Gagal load komentar:", error);
+      commentsList.innerHTML = '<p style="text-align:center; color:red; font-style:italic;">Gagal memuat komentar. Cek koneksi internet.</p>';
+    }
   }
 
-  // Render komentar bawaan saat web dibuka
-  defaultComments.forEach(c => renderComment(c.name, c.text));
-
-  // Aksi saat tombol kirim diklik
-  submitBtn.addEventListener('click', () => {
+  // 2. Fungsi kirim komentar ke database
+  submitBtn.addEventListener('click', async () => {
     const name = nameInput.value.trim();
     const text = textInput.value.trim();
 
@@ -433,13 +461,38 @@
       return;
     }
 
-    // Munculkan komentar secara visual
-    renderComment(name, text);
+    submitBtn.disabled = true; // cegah klik ganda
+    submitBtn.textContent = "Mengirim... 💌";
 
-    // Kosongkan form
-    nameInput.value = '';
-    textInput.value = '';
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/comments`, {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=minimal' // Supaya ga ngembaliin data, lebih ringan
+        },
+        body: JSON.stringify({ name: name, text: text })
+      });
+
+      if (res.ok) {
+        nameInput.value = '';
+        textInput.value = '';
+        fetchComments(); // refresh list komentar langsung
+      } else {
+        alert("Gagal mengirim komentar. Coba lagi nanti.");
+      }
+    } catch (error) {
+      alert("Gagal mengirim komentar. Pastikan internet lancar.");
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = "Kirim Pesan 💌";
+    }
   });
+
+  // 3. Panggil data komentar saat web pertama dibuka
+  fetchComments();
 </script>
 
 </body>
